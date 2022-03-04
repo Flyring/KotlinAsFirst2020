@@ -2,7 +2,11 @@
 
 package lesson7.task1
 
+import lesson2.task2.circleInside
 import java.io.File
+import java.lang.IndexOutOfBoundsException
+import kotlin.math.pow
+import kotlin.system.exitProcess
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +67,28 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val input = File(inputName).readLines()
+    var f = 0
+    if (input != emptyList<Any>())
+        if (input[0] == "")
+            writer.write(input[0])
+        else if (input[0][0] != '_') {
+            writer.write(input[0])
+            f = 1
+        }
+    for (i in 1 until input.size) {
+        if (input[i] == "") {
+            if (f != 0) writer.newLine()
+            writer.write(input[i])
+            f = 1
+        } else if (input[i][0] != '_') {
+            if (f != 0) writer.newLine()
+            writer.write(input[i])
+            f = 1
+        }
+    }
+    writer.close()
 }
 
 /**
@@ -268,15 +293,15 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * Соответствующий выходной файл:
 <html>
-    <body>
-        <p>
-            Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
-            Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
-        </p>
-        <p>
-            Suspendisse <s>et elit in enim tempus iaculis</s>.
-        </p>
-    </body>
+<body>
+<p>
+Lorem ipsum <i>dolor sit amet</i>, consectetur <b>adipiscing</b> elit.
+Vestibulum lobortis. <s>Est vehicula rutrum <i>suscipit</i></s>, ipsum <s>lib</s>ero <i>placerat <b>tortor</b></i>.
+</p>
+<p>
+Suspendisse <s>et elit in enim tempus iaculis</s>.
+</p>
+</body>
 </html>
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -319,65 +344,65 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  *
  * Пример входного файла:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
-* Утка по-пекински
-    * Утка
-    * Соус
-* Салат Оливье
-    1. Мясо
-        * Или колбаса
-    2. Майонез
-    3. Картофель
-    4. Что-то там ещё
-* Помидоры
-* Фрукты
-    1. Бананы
-    23. Яблоки
-        1. Красные
-        2. Зелёные
+ * Утка по-пекински
+ * Утка
+ * Соус
+ * Салат Оливье
+1. Мясо
+ * Или колбаса
+2. Майонез
+3. Картофель
+4. Что-то там ещё
+ * Помидоры
+ * Фрукты
+1. Бананы
+23. Яблоки
+1. Красные
+2. Зелёные
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  *
  *
  * Соответствующий выходной файл:
 ///////////////////////////////начало файла/////////////////////////////////////////////////////////////////////////////
 <html>
-  <body>
-    <p>
-      <ul>
-        <li>
-          Утка по-пекински
-          <ul>
-            <li>Утка</li>
-            <li>Соус</li>
-          </ul>
-        </li>
-        <li>
-          Салат Оливье
-          <ol>
-            <li>Мясо
-              <ul>
-                <li>Или колбаса</li>
-              </ul>
-            </li>
-            <li>Майонез</li>
-            <li>Картофель</li>
-            <li>Что-то там ещё</li>
-          </ol>
-        </li>
-        <li>Помидоры</li>
-        <li>Фрукты
-          <ol>
-            <li>Бананы</li>
-            <li>Яблоки
-              <ol>
-                <li>Красные</li>
-                <li>Зелёные</li>
-              </ol>
-            </li>
-          </ol>
-        </li>
-      </ul>
-    </p>
-  </body>
+<body>
+<p>
+<ul>
+<li>
+Утка по-пекински
+<ul>
+<li>Утка</li>
+<li>Соус</li>
+</ul>
+</li>
+<li>
+Салат Оливье
+<ol>
+<li>Мясо
+<ul>
+<li>Или колбаса</li>
+</ul>
+</li>
+<li>Майонез</li>
+<li>Картофель</li>
+<li>Что-то там ещё</li>
+</ol>
+</li>
+<li>Помидоры</li>
+<li>Фрукты
+<ol>
+<li>Бананы</li>
+<li>Яблоки
+<ol>
+<li>Красные</li>
+<li>Зелёные</li>
+</ol>
+</li>
+</ol>
+</li>
+</ul>
+</p>
+</body>
 </html>
 ///////////////////////////////конец файла//////////////////////////////////////////////////////////////////////////////
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
@@ -404,27 +429,66 @@ fun markdownToHtml(inputName: String, outputName: String) {
  * Вывести в выходной файл процесс умножения столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 111):
-   19935
-*    111
+19935
+ *    111
 --------
-   19935
+19935
 + 19935
 +19935
 --------
- 2212785
+2212785
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  * Нули в множителе обрабатывать так же, как и остальные цифры:
-  235
-*  10
+235
+ *  10
 -----
-    0
+0
 +235
 -----
- 2350
+2350
  *
  */
+fun count(n: Int): Int {
+    var temp = n
+    var c = 0
+    do {
+        c++
+        temp /= 10
+    } while (temp > 0)
+    return c
+}
+
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val str1 = " ".repeat(count(rhv * lhv) + 1 - count(lhv))
+    writer.write(str1 + lhv)
+    writer.newLine()
+    val str2 = "*" + (" ".repeat(count(rhv * lhv) - count(rhv))) + rhv
+    writer.write(str2)
+    writer.newLine()
+    val str3 = "-".repeat(count(rhv * lhv) + 1)
+    writer.write(str3)
+    writer.newLine()
+    var temp = rhv
+    var x: Int
+    var str: String
+    var rank = count(lhv * rhv) + 1
+    for (i in 0 until count(rhv)) {
+        x = temp % 10 * lhv
+        temp /= 10
+        str = if (i == 0)
+            (" ").repeat(rank - count(x)) + x
+        else
+            "+" + (" ").repeat(rank - count(x) - 1) + x
+        rank -= 1
+        writer.write(str)
+        writer.newLine()
+    }
+    val final = "-".repeat(count(lhv * rhv) + 1)
+    writer.write(final)
+    writer.newLine()
+    writer.write(" " + rhv * lhv)
+    writer.close()
 }
 
 
@@ -434,21 +498,23 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  * Вывести в выходной файл процесс деления столбиком числа lhv (> 0) на число rhv (> 0).
  *
  * Пример (для lhv == 19935, rhv == 22):
-  19935 | 22
- -198     906
- ----
-    13
-    -0
-    --
-    135
-   -132
-   ----
-      3
+19935 | 22
+-198     906
+----
+13
+-0
+--
+135
+-132
+----
+3
 
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
+
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
+
 
